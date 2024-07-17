@@ -1,0 +1,28 @@
+{
+  "name": "@nubuild/shared",
+  "version": "0.0.0",
+  "module": "index.ts",
+  "type": "module",
+  "files": ["."],
+  "author": "renzp <1074720760.qq.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/renzp94/nubuild.git"
+  },
+  "homepage": "https://github.com/renzp94/nubuild#readme",
+  "bugs": {
+    "url": "https://github.com/renzp94/nubuild/issues"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
+  "license": "MIT",
+  "keywords": ["nubuild shared"],
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

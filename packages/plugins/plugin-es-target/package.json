@@ -1,0 +1,31 @@
+{
+  "name": "@nubuild/plugin-es-target",
+  "version": "0.0.0",
+  "module": "index.ts",
+  "type": "module",
+  "files": ["./index.ts"],
+  "author": "renzp <1074720760.qq.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/renzp94/nubuild.git"
+  },
+  "homepage": "https://github.com/renzp94/nubuild#readme",
+  "bugs": {
+    "url": "https://github.com/renzp94/nubuild/issues"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
+  "license": "MIT",
+  "keywords": ["nubuild plugin", "plugin-es-target"],
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@swc/core": "^1.6.13"
+  }
+}

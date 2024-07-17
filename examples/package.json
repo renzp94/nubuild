@@ -1,0 +1,15 @@
+{
+  "name": "examples",
+  "type": "module",
+  "scripts": {
+    "dev": "nubuild dev",
+    "build": "nubuild build"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@nubuild/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

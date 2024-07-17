@@ -1,0 +1,29 @@
+{
+  "name": "nubuild",
+  "private": true,
+  "workspaces": ["packages/*", "packages/plugins/*", "examples"],
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged",
+    "commit-msg": "npx --no -- commitlint --edit $1"
+  },
+  "lint-staged": {
+    "src/**/*.{js,ts}": ["biome check", "biome format --write"]
+  },
+  "scripts": {
+    "prepare": "npx simple-git-hooks",
+    "lint": "biome check --apply-unsafe src && biome format --write src",
+    "dev": "bun run --filter examples dev",
+    "build": "bun run --filter examples build"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.7.0",
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@types/bun": "latest",
+    "bun-plugin-dts": "^0.2.3",
+    "lint-staged": "^15.2.4",
+    "simple-git-hooks": "^2.11.1",
+    "standard-version": "^9.5.0",
+    "typescript": "^5.4.5"
+  }
+}

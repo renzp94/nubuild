@@ -1,0 +1,3 @@
+# shared
+
+nubuild shared lib
