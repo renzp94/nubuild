@@ -1,5 +1,5 @@
 {
-  "name": "@nubuild/bun-plugin-es-target",
+  "name": "@nubuild/bun-plugin-dts",
   "version": "0.0.0",
   "module": "index.ts",
   "type": "module",
@@ -18,7 +18,7 @@
     "access": "public"
   },
   "license": "MIT",
-  "keywords": ["nubuild plugin", "plugin-es-target", "bun-plugin"],
+  "keywords": ["nubuild plugin", "plugin-dts"],
   "devDependencies": {
     "@types/bun": "latest"
   },
@@ -26,6 +26,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@swc/core": "^1.6.13"
+    "dts-bundle-generator": "^9.5.1",
+    "get-tsconfig": "^4.7.5"
   }
 }

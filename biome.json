@@ -1,6 +1,6 @@
 {
   "files": {
-    "ignore": ["dist"]
+    "ignore": ["dist", "old"]
   },
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "organizeImports": {

@@ -1,12 +1,14 @@
-import swc, { type JscTarget } from '@swc/core'
+import swc, { type Options } from '@swc/core'
 import type { BunPlugin } from 'bun'
 
-const PluginEsTarget = (target: JscTarget = 'esnext'): BunPlugin => ({
-  name: 'es-target-plugin',
+export type SwcOptions = Options
+
+const PluginEsTarget = (options: SwcOptions): BunPlugin => ({
+  name: 'nubuild:es-target',
   setup(build) {
     build.onLoad({ filter: /\.ts$/ }, async (args) => {
-      const { code } = await swc.transformFile(args.path, { jsc: { target } })
-      return { contents: code, loader: 'js' }
+      const { code } = await swc.transformFile(args.path, options)
+      return { contents: code }
     })
   },
 })

@@ -1,9 +1,14 @@
 {
-  "name": "@nubuild/bun-plugin-es-target",
+  "name": "@nubuild/cli",
   "version": "0.0.0",
+  "description": "nubuild命令行工具",
+  "bin": {
+    "nubuild": "./index.ts"
+  },
+  "main": "./index.ts",
   "module": "index.ts",
   "type": "module",
-  "files": ["./index.ts"],
+  "files": ["."],
   "author": "renzp <1074720760.qq.com>",
   "repository": {
     "type": "git",
@@ -18,7 +23,7 @@
     "access": "public"
   },
   "license": "MIT",
-  "keywords": ["nubuild plugin", "plugin-es-target", "bun-plugin"],
+  "keywords": ["nubuild"],
   "devDependencies": {
     "@types/bun": "latest"
   },
@@ -26,6 +31,9 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@swc/core": "^1.6.13"
+    "@nubuild/core": "workspace: *",
+    "cac": "^6.7.14",
+    "kolorist": "^1.8.0",
+    "ora": "^8.0.1"
   }
 }

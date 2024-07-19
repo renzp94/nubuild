@@ -1,8 +1,11 @@
 import path from 'node:path'
-import PluginEsTarget from '@nubuild/plugin-es-target'
-import PluginDts from 'bun-plugin-dts'
+import type { NuBuildConfigs } from '@nubuild/core'
+import { rm } from '@nubuild/shared'
+import { blue, bold, gray, green, red, yellow } from 'kolorist'
+import ora from 'ora'
+import { runBuild } from './build'
 import { DEFAULT_CONFIG } from './enums'
-import type { CliBuildOptions, NuBuildConfigs } from './types'
+import type { CliBuildOptions } from './types'
 
 type InitOptions = Omit<CliBuildOptions, 'm' | 'mode'>
 
@@ -11,12 +14,11 @@ export class NuBuild {
   configs: NuBuildConfigs
   constructor() {
     this.#root = process.cwd()
-    this.configs = { entrypoints: [] }
+    this.configs = { entrypoints: [], outdir: DEFAULT_CONFIG.OUTPUT }
   }
   async init(options: InitOptions) {
     const configs = await this.#loadConfigs(options.c)
     this.#mergeConfigs(configs, options)
-    this.#registerDefaultPlugins()
   }
   async #loadConfigs(filename: string) {
     const fullPath = path.resolve(this.#root, filename)
@@ -25,21 +27,6 @@ export class NuBuild {
   }
   #mergeConfigs(configs: NuBuildConfigs, options: InitOptions) {
     const { outdir } = options
-    this.configs = { outdir, ...configs }
-  }
-  #registerDefaultPlugins() {
-    const {
-      plugins = [],
-      jsTarget = DEFAULT_CONFIG.JS_TARGET,
-      ...configs
-    } = this.configs
-    this.configs = {
-      ...configs,
-      plugins: [...plugins, PluginDts(), PluginEsTarget(jsTarget)],
-    }
-  }
-  async build() {
-    const { createBuild } = await import('./build')
-    await createBuild(this.configs)
+    this.configs = Object.assign({}, { outdir }, configs)
   }
 }

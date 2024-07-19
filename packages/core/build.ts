@@ -1,36 +1,66 @@
+import type { DtsBuildArtifact, DtsOptions } from '@nubuild/bun-plugin-dts'
 import { rm } from '@nubuild/shared'
-import { blue, bold, gray, green, red, yellow } from 'kolorist'
-import ora from 'ora'
-import type { CreateBuildOptions } from './types'
+import type { BuildConfig, BuildOutput } from 'bun'
+import type { CommonOptions } from '.'
+import { getDefaultPlugins } from './plugins'
 
-export const createBuild = async (options: CreateBuildOptions) => {
-  const { clean, showOutInfo = true, ...buildOptions } = options
-  const spinner = ora()
-  if (clean) {
-    spinner.start(gray(`Cleaning outDir: ${options.outdir}`))
-    await rm(options.outdir)
-    spinner.succeed(green('Cleaned'))
+export interface BuildOptions extends BuildConfig, CommonOptions {
+  clean?: boolean
+  dts?: boolean | DtsOptions
+}
+
+export interface NuBuildBuildOutput extends BuildOutput {
+  time: number
+}
+
+/**
+ * 创建
+ * @param options
+ * @returns
+ */
+export const build = async (
+  options: BuildOptions,
+): Promise<NuBuildBuildOutput> => {
+  const { clean, dts, swc, ...buildOptions } = options
+  if (clean && options.outdir) {
+    await cleanDir(options.outdir)
   }
+
+  let dtsFiles: DtsBuildArtifact[] = []
+  const onDtsEnd = (files: DtsBuildArtifact[]) => {
+    dtsFiles = files
+  }
+  const defaultPlugins = getDefaultPlugins({ dts, swc, onDtsEnd })
+  const { plugins = [], ...otherOptions } = buildOptions
+
+  const startTime = Date.now()
 
   try {
-    spinner.start('Building...')
-    const result = await Bun.build(buildOptions)
-    if (result.success) {
-      spinner.succeed(green('Builded'))
-      if (showOutInfo) {
-        console.log(bold(yellow('Output assets: ')))
-        for (const item of result.outputs) {
-          console.log(blue(`    .${item.path.replace(process.cwd(), '')}`))
-        }
-      }
-    } else {
-      spinner.fail(green('Builded'))
-      for (const item of result.logs) {
-        console.log(red(`    ${item.message}`))
-      }
+    const result = await Bun.build({
+      ...otherOptions,
+      plugins: [...defaultPlugins, ...plugins],
+    })
+    const endTime = Date.now()
+    const { outputs, ...otherResult } = result
+    return {
+      ...otherResult,
+      outputs: [...outputs, ...dtsFiles],
+      time: endTime - startTime,
+    } as any
+  } catch (err: any) {
+    const endTime = Date.now()
+    return {
+      outputs: [],
+      success: false,
+      logs: [err.message],
+      time: endTime - startTime,
     }
-    console.log()
-  } catch {
-    spinner.fail(red('Builded'))
   }
 }
+
+/**
+ * 清除目录
+ * @param dir 目标目录
+ * @returns 删除成功返回true，否则返回false
+ */
+export const cleanDir = (dir: string) => rm(dir)

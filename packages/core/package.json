@@ -2,13 +2,10 @@
   "name": "@nubuild/core",
   "version": "0.0.0",
   "description": "基于Bun开发的打包器",
-  "bin": {
-    "nubuild": "./bin/cli.ts"
-  },
+  "main": "./index.ts",
   "module": "index.ts",
   "type": "module",
   "files": ["."],
-  "types": "./types.ts",
   "author": "renzp <1074720760.qq.com>",
   "repository": {
     "type": "git",
@@ -31,10 +28,9 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@nubuild/plugin-es-target": "workspace: *",
+    "@nubuild/bun-plugin-dts": "workspace: *",
+    "@nubuild/bun-plugin-es-target": "workspace: *",
     "@nubuild/shared": "workspace: *",
-    "cac": "^6.7.14",
-    "kolorist": "^1.8.0",
-    "ora": "^8.0.1"
+    "@renzp/utils": "^0.3.8"
   }
 }

@@ -1,7 +1,10 @@
-import { defineConfig } from '@nubuild/core'
+import { defineConfig } from '@nubuild/cli'
 
 export default defineConfig({
   entrypoints: ['index.ts'],
   clean: true,
-  dst: true,
+  dts: true,
+  swc: {
+    jsc: { target: 'es2015' },
+  },
 })
