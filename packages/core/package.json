@@ -1,12 +1,12 @@
 {
   "name": "@nubuild/core",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "基于Bun开发的打包器",
   "main": "./index.ts",
   "module": "index.ts",
   "type": "module",
   "files": [
-    "."
+    "./"
   ],
   "author": "renzp <1074720760.qq.com>",
   "repository": {
