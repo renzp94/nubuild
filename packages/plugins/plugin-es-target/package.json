@@ -1,9 +1,11 @@
 {
   "name": "@nubuild/bun-plugin-es-target",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "module": "index.ts",
   "type": "module",
-  "files": ["./index.ts"],
+  "files": [
+    "./index.ts"
+  ],
   "author": "renzp <1074720760.qq.com>",
   "repository": {
     "type": "git",
@@ -18,7 +20,11 @@
     "access": "public"
   },
   "license": "MIT",
-  "keywords": ["nubuild plugin", "plugin-es-target", "bun-plugin"],
+  "keywords": [
+    "nubuild plugin",
+    "plugin-es-target",
+    "bun-plugin"
+  ],
   "devDependencies": {
     "@types/bun": "latest"
   },
