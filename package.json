@@ -21,8 +21,12 @@
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
     "@types/bun": "latest",
+    "@types/prompts": "^2.4.9",
     "bun-plugin-dts": "^0.2.3",
+    "kolorist": "^1.8.0",
     "lint-staged": "^15.2.4",
+    "ora": "^8.0.1",
+    "prompts": "^2.4.2",
     "simple-git-hooks": "^2.11.1",
     "standard-version": "^9.5.0",
     "typescript": "^5.4.5"
