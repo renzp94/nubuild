@@ -1,11 +1,13 @@
 {
   "name": "@nubuild/core",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "基于Bun开发的打包器",
   "main": "./index.ts",
   "module": "index.ts",
   "type": "module",
-  "files": ["."],
+  "files": [
+    "."
+  ],
   "author": "renzp <1074720760.qq.com>",
   "repository": {
     "type": "git",
@@ -20,7 +22,9 @@
     "access": "public"
   },
   "license": "MIT",
-  "keywords": ["nubuild"],
+  "keywords": [
+    "nubuild"
+  ],
   "devDependencies": {
     "@types/bun": "latest"
   },
