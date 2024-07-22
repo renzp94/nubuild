@@ -1,10 +1,10 @@
 {
   "name": "@nubuild/shared",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "module": "index.ts",
   "type": "module",
   "files": [
-    "."
+    "./"
   ],
   "author": "renzp <1074720760.qq.com>",
   "repository": {
