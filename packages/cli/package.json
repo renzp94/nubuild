@@ -1,6 +1,6 @@
 {
   "name": "@nubuild/cli",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "nubuild命令行工具",
   "bin": {
     "nubuild": "./index.ts"
@@ -35,7 +35,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@nubuild/core": "workspace: *",
+    "@nubuild/core": "^0.0.3",
     "cac": "^6.7.14",
     "kolorist": "^1.8.0",
     "ora": "^8.0.1"
