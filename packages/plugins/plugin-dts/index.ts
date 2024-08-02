@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { type BunPlugin, type PluginBuilder, hash } from 'bun'
+import type { BunPlugin } from 'bun'
 import {
   type CompilationOptions,
   type EntryPointConfig,
