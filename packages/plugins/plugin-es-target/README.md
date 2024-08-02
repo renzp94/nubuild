@@ -1,3 +1,3 @@
 # plugin-es-target
 
-build for es target
+build for es target by swc
