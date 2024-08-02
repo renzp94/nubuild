@@ -1,7 +1,7 @@
 import type { DtsBuildArtifact, DtsOptions } from '@nubuild/bun-plugin-dts'
 import { rm } from '@nubuild/shared'
 import type { BuildConfig, BuildOutput } from 'bun'
-import type { CommonOptions } from '.'
+import type { CommonOptions } from './index'
 import { getDefaultPlugins } from './plugins'
 
 export interface BuildOptions extends BuildConfig, CommonOptions {
