@@ -1,15 +1,8 @@
-# core
+# @nubuild/core
 
-To install dependencies:
+![环境支持](https://img.shields.io/badge/支持环境-Bun-blue)
 
-```bash
-bun install
-```
 
-To run:
+nubuild核心包
 
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v1.1.18. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+> 注意：此包的方式是源码引入，所以只能在`bun`环境下使用
