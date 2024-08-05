@@ -5,9 +5,7 @@
   "main": "./index.ts",
   "module": "index.ts",
   "type": "module",
-  "files": [
-    "./"
-  ],
+  "files": ["./"],
   "author": "renzp <1074720760.qq.com>",
   "repository": {
     "type": "git",
@@ -22,9 +20,7 @@
     "access": "public"
   },
   "license": "MIT",
-  "keywords": [
-    "nubuild"
-  ],
+  "keywords": ["nubuild"],
   "devDependencies": {
     "@types/bun": "latest"
   },
@@ -32,9 +28,9 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@nubuild/bun-plugin-dts": "^0.0.1",
-    "@nubuild/bun-plugin-es-target": "^0.0.1",
-    "@nubuild/shared": "^0.0.2",
+    "@nubuild/bun-plugin-dts": "^0.0.2",
+    "@nubuild/bun-plugin-es-target": "^0.0.2",
+    "@nubuild/shared": "^0.0.3",
     "@renzp/utils": "^0.3.8"
   }
 }
