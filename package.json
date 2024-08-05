@@ -22,7 +22,6 @@
     "@commitlint/config-conventional": "^19.2.2",
     "@types/bun": "latest",
     "@types/prompts": "^2.4.9",
-    "bun-plugin-dts": "^0.2.3",
     "kolorist": "^1.8.0",
     "lint-staged": "^15.2.4",
     "ora": "^8.0.1",
