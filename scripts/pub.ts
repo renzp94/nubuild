@@ -131,8 +131,6 @@ const writeChangelogs = async (
   await fs.unlink(`${packageDir}/CHANGELOG.md`)
 }
 
-const rootChangelogFilePath = path.resolve(process.cwd(), 'CHANGELOG.md')
-
 const { isRepublish, packageInfo, ...restValues } = await getPromptValues()
 const spinner = ora()
 let version = packageInfo.version
@@ -143,6 +141,7 @@ if (!isRepublish) {
     packageInfo,
   })
   version = newVersion
+  const rootChangelogFilePath = path.resolve(process.cwd(), 'CHANGELOG.md')
   await writeChangelogs(changelogs, rootChangelogFilePath, packageInfo.dir)
   spinner.succeed(green('✍ Write changelog success'))
 
