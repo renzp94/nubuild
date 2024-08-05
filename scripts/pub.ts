@@ -93,12 +93,12 @@ const getChangelogs = async ({
 
   const file = Bun.file(`${packageInfo.dir}/CHANGELOG.md`)
   const content = await file.text()
-  const startStr = `### ${newVersion}`
+  const startStr = `### [${newVersion}]`
   const startIndex = content.indexOf(startStr)
-  const endStr = `### ${oldVersion}`
+  const endStr = `### [${oldVersion}]`
   const endIndex = content.indexOf(endStr)
   const changelog = content.slice(startIndex, endIndex)
-  const [title, ...restLogs] = changelog.split('\n')
+  const [_, ...restLogs] = changelog.split('\n')
   const currentLogs = restLogs
     .filter((log) => {
       return log.includes('*') ? log.includes(`**${packageInfo.name}:**`) : true
@@ -107,9 +107,12 @@ const getChangelogs = async ({
 
   const hasChange = !!currentLogs.find((log) => log.includes('*'))
 
+  const date = new Date()
+  const logTime = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+
   const changelogs = hasChange
-    ? `${title.replace(`### ${newVersion}`, `### ${packageInfo.name}@${newVersion}`)}${currentLogs.join('\n')}`
-    : changelog.replace(`### ${newVersion}`, '### all packages')
+    ? `## ${packageInfo.name}@${newVersion} (${logTime})\n${currentLogs.join('\n')}`
+    : changelog.replace(`### [${newVersion}]`, '## all packages')
   return { changelogs, newVersion }
 }
 
