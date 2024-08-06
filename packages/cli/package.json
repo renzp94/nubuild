@@ -1,6 +1,6 @@
 {
   "name": "@nubuild/cli",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "nubuild命令行工具",
   "bin": {
     "nubuild": "./index.ts"
@@ -8,7 +8,9 @@
   "main": "./index.ts",
   "module": "index.ts",
   "type": "module",
-  "files": ["./"],
+  "files": [
+    "./"
+  ],
   "author": "renzp <1074720760.qq.com>",
   "repository": {
     "type": "git",
@@ -23,7 +25,9 @@
     "access": "public"
   },
   "license": "MIT",
-  "keywords": ["nubuild"],
+  "keywords": [
+    "nubuild"
+  ],
   "devDependencies": {
     "@types/bun": "latest"
   },

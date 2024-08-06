@@ -1,3 +1,17 @@
+## @nubuild/cli@0.0.4 (2024-8-6)
+
+
+### 新功能
+
+* 支持配置文件导出函数 ([4381d95](https://github.com/renzp94/nubuild/commit/4381d95167cb28d70727d36cd7f08721f63a7169))
+
+
+### 其他
+
+* 调整cleanDir引入 ([2eca97f](https://github.com/renzp94/nubuild/commit/2eca97f95e83c0968f99e7876bd500aaf2b20dc9))
+* 更新@nubuild/core版本 ([a7d8f2a](https://github.com/renzp94/nubuild/commit/a7d8f2a62143b96707434cecc17008aad82569aa))
+* 更新依赖 ([df8eae3](https://github.com/renzp94/nubuild/commit/df8eae3516df2706b60ad65e6351577d7e8a5cc2))
+
 ## @nubuild/core@0.0.5 (2024-8-6)
 
 
