@@ -1,9 +1,6 @@
 import path from 'node:path'
 import type { NuBuildConfigs } from '@nubuild/core'
-import { rm } from '@nubuild/shared'
-import { blue, bold, gray, green, red, yellow } from 'kolorist'
-import ora from 'ora'
-import { runBuild } from './build'
+import { isFunction } from '@renzp/utils'
 import { DEFAULT_CONFIG } from './enums'
 import type { CliBuildOptions } from './types'
 
@@ -22,7 +19,11 @@ export class NuBuild {
   }
   async #loadConfigs(filename: string) {
     const fullPath = path.resolve(this.#root, filename)
-    const { default: configs } = await import(fullPath)
+    const { default: configContent } = await import(fullPath)
+    const configs = isFunction(configContent)
+      ? await configContent()
+      : configContent
+
     return configs
   }
   #mergeConfigs(configs: NuBuildConfigs, options: InitOptions) {
