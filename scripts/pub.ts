@@ -84,27 +84,76 @@ const getChangelogs = async ({
   versionType,
   tag,
 }: Omit<PromptValues, 'isRepublish'>) => {
+  console.log(
+    `cd ${packageInfo.dir} && bunx standard-version --skip.commit --release-as ${versionType} ${tag ? '' : `--tag-prefix ${packageInfo.name}@`}`,
+  )
   const result =
-    await Bun.$`cd ${packageInfo.dir} && bunx standard-version --skip.commit --release-as ${versionType} ${tag ? '' : '--skip.tag'}`
-  const [oldVersion, newVersion] = (await result.text())
+    await Bun.$`cd ${packageInfo.dir} && bunx standard-version --skip.commit --release-as ${versionType} --tag-prefix ${tag ? 'v' : `${packageInfo.name}@`}`
+  const versionResult = await result.text()
+  const [oldVersion, newVersion] = versionResult
     .replace('✔ bumping version in package.json from ', '')
     .split('\n')[0]
     .split(' to ')
 
+  if (!tag) {
+    const tagResult = versionResult
+      .split('\n')
+      .at(-3)
+      ?.replace('✔ tagging release ', '')
+
+    await Bun.$`git tag --delete ${tagResult}`
+  }
+
   const file = Bun.file(`${packageInfo.dir}/CHANGELOG.md`)
   const content = await file.text()
-  const startStr = `### [${newVersion}]`
-  const startIndex = content.indexOf(startStr)
-  const endStr = `### [${oldVersion}]`
-  const endIndex = content.indexOf(endStr)
+  const startStr = `### ${newVersion}`
+  const otherStartStr = `### [${newVersion}]`
+  let startIndex = content.indexOf(startStr)
+  if (startIndex === -1) {
+    startIndex = content.indexOf(otherStartStr)
+  }
+  const endStr = `### ${oldVersion}`
+  const otherEndStr = `### [${oldVersion}]`
+  let endIndex = content.indexOf(endStr)
+  if (endIndex === -1) {
+    endIndex = content.indexOf(otherEndStr)
+  }
   const changelog = content.slice(startIndex, endIndex)
   const [_, ...restLogs] = changelog.split('\n')
-  const currentLogs = restLogs
+  let currentLogs = restLogs
     .filter((log) => {
       return log.includes('*') ? log.includes(`**${packageInfo.name}:**`) : true
     })
     .map((log) => log.replace(` **${packageInfo.name}:**`, ''))
 
+  let logList: string[] = []
+  currentLogs = currentLogs.reduce((prev, curr, index) => {
+    if (curr.includes('###')) {
+      if (logList.length === 0) {
+        logList.push(curr)
+        return prev
+      }
+
+      const isEmpty = logList.every((item, index) => index === 0 || !item)
+      let list = prev
+      if (!isEmpty) {
+        list = [...list, ...logList]
+      }
+      logList = [curr]
+
+      return list
+    }
+
+    if (logList.length > 0) {
+      logList.push(curr)
+      const isEmpty = logList.every((item, index) => index === 0 || !item)
+      return index === currentLogs.length - 1 && !isEmpty
+        ? [...prev, ...logList]
+        : prev
+    }
+
+    return [...prev, curr]
+  }, [] as string[])
   const hasChange = !!currentLogs.find((log) => log.includes('*'))
 
   const date = new Date()
@@ -112,7 +161,10 @@ const getChangelogs = async ({
 
   const changelogs = hasChange
     ? `## ${packageInfo.name}@${newVersion} (${logTime})\n${currentLogs.join('\n')}`
-    : changelog.replace(`### [${newVersion}]`, '## all packages')
+    : changelog
+        .replace(`### ${newVersion}`, '## all packages')
+        .replace(`### [${newVersion}]`, '## all packages')
+
   return { changelogs, newVersion }
 }
 
@@ -154,6 +206,4 @@ if (!isRepublish) {
   spinner.succeed(green('📔 git commit success'))
 }
 
-spinner.start(gray(`📦 public ${packageInfo.name} package...\n`))
-await Bun.$`cd ${packageInfo.dir} && npm publish`
-spinner.succeed(green(`📦 public ${packageInfo.name} package success`))
+// await Bun.$`cd ${packageInfo.dir} && npm publish`
