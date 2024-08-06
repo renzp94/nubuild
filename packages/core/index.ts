@@ -10,6 +10,7 @@ export * from './build'
 export interface CommonOptions {
   mode?: 'development' | 'production'
   swc?: SwcOptions
+  staticDir?: string
 }
 
 export interface NuBuildConfigs extends BuildOptions {}

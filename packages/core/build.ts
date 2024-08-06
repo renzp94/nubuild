@@ -1,8 +1,9 @@
 import type { DtsBuildArtifact, DtsOptions } from '@nubuild/bun-plugin-dts'
-import { rm } from '@nubuild/shared'
 import type { BuildConfig, BuildOutput } from 'bun'
+import { DEFAULT_CONFIG } from './enums'
 import type { CommonOptions } from './index'
 import { getDefaultPlugins } from './plugins'
+import { cleanDir, copyDir } from './utils'
 
 export interface BuildOptions extends BuildConfig, CommonOptions {
   clean?: boolean
@@ -21,7 +22,14 @@ export interface NuBuildBuildOutput extends BuildOutput {
 export const build = async (
   options: BuildOptions,
 ): Promise<NuBuildBuildOutput> => {
-  const { clean, dts, swc, ...buildOptions } = options
+  const {
+    clean,
+    dts,
+    swc,
+    staticDir = DEFAULT_CONFIG.STATIC_DIR,
+    outdir = DEFAULT_CONFIG.OUT_DIR,
+    ...buildOptions
+  } = options
   if (clean && options.outdir) {
     await cleanDir(options.outdir)
   }
@@ -37,14 +45,16 @@ export const build = async (
 
   try {
     const result = await Bun.build({
+      outdir,
       ...otherOptions,
       plugins: [...defaultPlugins, ...plugins],
     })
+    const copyResult = await copyDir(staticDir, outdir)
     const endTime = Date.now()
     const { outputs, ...otherResult } = result
     return {
       ...otherResult,
-      outputs: [...outputs, ...dtsFiles],
+      outputs: [...outputs, ...dtsFiles, ...copyResult],
       time: endTime - startTime,
     } as any
   } catch (err: any) {
@@ -52,10 +62,3 @@ export const build = async (
     process.exit(1)
   }
 }
-
-/**
- * 清除目录
- * @param dir 目标目录
- * @returns 删除成功返回true，否则返回false
- */
-export const cleanDir = (dir: string) => rm(dir)
