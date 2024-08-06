@@ -35,7 +35,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@nubuild/core": "^0.0.5",
+    "@nubuild/core": "^0.0.6",
     "@renzp/utils": "^0.3.9",
     "cac": "^6.7.14",
     "kolorist": "^1.8.0",
