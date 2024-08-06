@@ -1,3 +1,4 @@
+import fs from 'node:fs'
 import type { DtsBuildArtifact, DtsOptions } from '@nubuild/bun-plugin-dts'
 import type { BuildConfig, BuildOutput } from 'bun'
 import { DEFAULT_CONFIG } from './enums'
@@ -49,7 +50,11 @@ export const build = async (
       ...otherOptions,
       plugins: [...defaultPlugins, ...plugins],
     })
-    const copyResult = await copyDir(staticDir, outdir)
+    const hasStaticDir = fs.existsSync(staticDir)
+    let copyResult: Array<{ path: string }> = []
+    if (hasStaticDir) {
+      copyResult = await copyDir(staticDir, outdir)
+    }
     const endTime = Date.now()
     const { outputs, ...otherResult } = result
     return {
@@ -58,7 +63,7 @@ export const build = async (
       time: endTime - startTime,
     } as any
   } catch (err: any) {
-    console.log(err)
+    console.log(`\n${err}`)
     process.exit(1)
   }
 }
