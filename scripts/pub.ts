@@ -18,6 +18,8 @@ type PromptValues = {
   isRepublish: boolean
 }
 
+const rootChangelogFilePath = path.resolve(process.cwd(), 'CHANGELOG.md')
+
 const getPromptValues = async (): Promise<PromptValues> => {
   const args = Bun.argv
 
@@ -39,6 +41,8 @@ const getPromptValues = async (): Promise<PromptValues> => {
     })
   }
 
+  let pkgName = ''
+
   const promptValues = await prompts([
     {
       name: 'packageInfo',
@@ -52,6 +56,10 @@ const getPromptValues = async (): Promise<PromptValues> => {
             value: item,
           }
         }),
+      onState: (state) => {
+        pkgName = state.value.name
+        console.log(pkgName)
+      },
     },
     {
       name: 'versionType',
@@ -76,7 +84,7 @@ const getPromptValues = async (): Promise<PromptValues> => {
       name: 'tag',
       type: isRepublish ? null : 'toggle',
       message: gray('是否生成Tag?'),
-      initial: false,
+      initial: () => pkgName === '@nubuild/core',
       active: '是',
       inactive: '否',
     },
@@ -194,18 +202,35 @@ const writeChangelogs = async (
 
 const updateDepVersion = async (packageInfo: PromptValues['packageInfo']) => {
   const { dir, pkgPath, ...pkgInfo } = packageInfo
+  let allChangeDeps: string[] = []
   if (pkgInfo?.dependencies) {
-    pkgInfo.dependencies = await getDeps(pkgInfo.dependencies)
+    const [changeDeps, newDeps] = await getDeps(pkgInfo.dependencies)
+    if (changeDeps.length) {
+      pkgInfo.dependencies = newDeps
+      allChangeDeps = allChangeDeps.concat(changeDeps)
+    }
   }
   if (pkgInfo?.devDependencies) {
-    pkgInfo.devDependencies = await getDeps(pkgInfo.devDependencies)
+    const [changeDeps, newDeps] = await getDeps(pkgInfo.devDependencies)
+    if (changeDeps.length) {
+      pkgInfo.devDependencies = newDeps
+      allChangeDeps = allChangeDeps.concat(changeDeps)
+    }
   }
 
-  await Bun.write(pkgPath, JSON.stringify(pkgInfo, null, 2))
+  if (allChangeDeps.length) {
+    await Bun.write(pkgPath, JSON.stringify(pkgInfo, null, 2))
+    const changeDepNames = allChangeDeps.toString()
+    await Bun.$`git add ${pkgPath}`
+    await Bun.$`git commit -m "chore(${pkgInfo.name}): update ${changeDepNames} version"`
+  }
 }
 
-const getDeps = async (deps: Record<string, string>) => {
+const getDeps = async (
+  deps: Record<string, string>,
+): Promise<[string[], Record<string, string>]> => {
   const newDeps: Record<string, string> = {}
+  const changeDeps = []
   for (const key of Object.keys(deps)) {
     let version = deps[key]
     if (key.includes('@nubuild')) {
@@ -218,12 +243,38 @@ const getDeps = async (deps: Record<string, string>) => {
       const pkg = await Bun.file(pkgPath).json()
       if (`^${pkg.version}` !== version) {
         version = `^${pkg.version}`
+        changeDeps.push(pkg.name)
       }
     }
 
     newDeps[key] = version
   }
-  return newDeps
+  return [changeDeps, newDeps]
+}
+
+const renderChangelog = async ({
+  packageInfo,
+  versionType,
+  tag,
+}: Omit<PromptValues, 'isRepublish'>) => {
+  const result =
+    await Bun.$`cd ${packageInfo.dir} && bunx standard-version --skip.commit --release-as ${versionType} --tag-prefix ${tag ? 'v' : `${packageInfo.name}@`}`
+  const versionResult = await result.text()
+  if (!tag) {
+    const tagResult = versionResult
+      .split('\n')
+      .at(-3)
+      ?.replace('✔ tagging release ', '')
+
+    await Bun.$`git tag --delete ${tagResult}`
+    await fs.unlink(`${packageInfo.dir}/CHANGELOG.md`)
+  }
+  const [_, newVersion] = versionResult
+    .replace('✔ bumping version in package.json from ', '')
+    .split('\n')[0]
+    .split(' to ')
+
+  return newVersion
 }
 
 const { isRepublish, packageInfo, ...restValues } = await getPromptValues()
@@ -233,17 +284,14 @@ const spinner = ora()
 let version = packageInfo.version
 if (!isRepublish) {
   spinner.start(gray('✍ Write changelog...\n'))
-  const { changelogs, newVersion } = await getChangelogs({
+  version = await renderChangelog({
     ...restValues,
     packageInfo,
   })
-  version = newVersion
-  const rootChangelogFilePath = path.resolve(process.cwd(), 'CHANGELOG.md')
-  await writeChangelogs(changelogs, rootChangelogFilePath, packageInfo.dir)
   spinner.succeed(green('✍ Write changelog success'))
 
   spinner.start(gray('📔 git commit...'))
-  await Bun.$`git add ${packageInfo.dir} ${rootChangelogFilePath}`
+  await Bun.$`git add ${packageInfo.dir}`
   await Bun.$`git commit -m "release(${packageInfo.name}): publish v${version}"`
   spinner.succeed(green('📔 git commit success'))
 }
