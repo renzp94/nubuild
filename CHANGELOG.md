@@ -1,3 +1,12 @@
+## @nubuild/shared@0.0.4 (2024-8-6)
+
+
+### 新功能
+
+* 添加copy方法 ([5eccd1d](https://github.com/renzp94/nubuild/commit/5eccd1dc0384e5e78361eac8643637219f7c66e9))
+
+
+
 ## @nubuild/cli@0.0.3 (2024-8-5)
 
 
