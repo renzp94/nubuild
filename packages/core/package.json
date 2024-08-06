@@ -1,6 +1,6 @@
 {
   "name": "@nubuild/core",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "基于Bun开发的打包器",
   "main": "./index.ts",
   "module": "index.ts",
