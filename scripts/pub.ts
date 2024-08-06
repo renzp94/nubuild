@@ -5,7 +5,14 @@ import ora from 'ora'
 import prompts from 'prompts'
 
 type PromptValues = {
-  packageInfo: { dir: string; name: string; version: string; pkgPath: string }
+  packageInfo: {
+    dir: string
+    name: string
+    version: string
+    pkgPath: string
+    devDependencies: Record<string, string>
+    dependencies: Record<string, string>
+  }
   versionType: string
   tag: string
   isRepublish: boolean
@@ -27,9 +34,8 @@ const getPromptValues = async (): Promise<PromptValues> => {
     const { default: pkg } = await import(pkgPath)
     packages.push({
       dir,
-      name: pkg.name,
-      version: pkg.version,
       pkgPath,
+      ...pkg,
     })
   }
 
@@ -186,7 +192,43 @@ const writeChangelogs = async (
   await fs.unlink(`${packageDir}/CHANGELOG.md`)
 }
 
+const updateDepVersion = async (packageInfo: PromptValues['packageInfo']) => {
+  const { dir, pkgPath, ...pkgInfo } = packageInfo
+  if (pkgInfo?.dependencies) {
+    pkgInfo.dependencies = await getDeps(pkgInfo.dependencies)
+  }
+  if (pkgInfo?.devDependencies) {
+    pkgInfo.devDependencies = await getDeps(pkgInfo.devDependencies)
+  }
+
+  await Bun.write(pkgPath, JSON.stringify(pkgInfo, null, 2))
+}
+
+const getDeps = async (deps: Record<string, string>) => {
+  const newDeps: Record<string, string> = {}
+  for (const key of Object.keys(deps)) {
+    let version = deps[key]
+    if (key.includes('@nubuild')) {
+      let dir = key.replace('@nubuild/', '')
+      if (dir.includes('bun-plugin')) {
+        dir = `plugins/${dir.replace('bun-plugin', 'plugin')}`
+      }
+      dir = `./packages/${dir}`
+      const pkgPath = `${dir}/package.json`
+      const pkg = await Bun.file(pkgPath).json()
+      if (`^${pkg.version}` !== version) {
+        version = `^${pkg.version}`
+      }
+    }
+
+    newDeps[key] = version
+  }
+  return newDeps
+}
+
 const { isRepublish, packageInfo, ...restValues } = await getPromptValues()
+await updateDepVersion(packageInfo)
+
 const spinner = ora()
 let version = packageInfo.version
 if (!isRepublish) {
@@ -206,4 +248,4 @@ if (!isRepublish) {
   spinner.succeed(green('📔 git commit success'))
 }
 
-// await Bun.$`cd ${packageInfo.dir} && npm publish`
+await Bun.$`cd ${packageInfo.dir} && npm publish`
