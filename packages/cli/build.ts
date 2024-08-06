@@ -1,4 +1,5 @@
-import { type NuBuildConfigs, cleanDir } from '@nubuild/core'
+import type { NuBuildConfigs } from '@nubuild/core'
+import { cleanDir } from '@nubuild/core/utils'
 import { blue, bold, gray, green, red, yellow } from 'kolorist'
 import ora from 'ora'
 
