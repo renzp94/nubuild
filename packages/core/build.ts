@@ -14,7 +14,7 @@ export interface NuBuildBuildOutput extends BuildOutput {
 }
 
 /**
- * 创建
+ * 打包
  * @param options
  * @returns
  */
@@ -48,13 +48,8 @@ export const build = async (
       time: endTime - startTime,
     } as any
   } catch (err: any) {
-    const endTime = Date.now()
-    return {
-      outputs: [],
-      success: false,
-      logs: [err.message],
-      time: endTime - startTime,
-    }
+    console.log(err)
+    process.exit(1)
   }
 }
 
