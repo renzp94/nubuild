@@ -59,6 +59,11 @@
       "type": "release",
       "section": "发布包",
       "hidden": true
+    },
+    {
+      "type": "example",
+      "section": "用例",
+      "hidden": true
     }
   ]
 }

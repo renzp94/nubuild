@@ -17,6 +17,7 @@ export default {
         'ci',
         'release',
         'build',
+        'example',
       ],
     ],
   },

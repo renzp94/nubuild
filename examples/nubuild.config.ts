@@ -1,7 +1,7 @@
 import { defineConfig } from '@nubuild/cli'
 
 export default defineConfig({
-  entrypoints: ['index.ts'],
+  entrypoints: ['./src/index.ts'],
   clean: true,
   dts: true,
   swc: {
